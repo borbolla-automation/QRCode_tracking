@@ -4,7 +4,7 @@
 
 Project for Production line converter housing tracking , and QR code Generation , as well as synchronization casting-manufacturing codes with single ID
 
-##Goals and schedule
+## Goals and schedule
 
 - [x] Computer adquisition from supplier (ordering)
 - [ ] Computer delivery to mkdc
