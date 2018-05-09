@@ -7,7 +7,7 @@ Project for Production line converter housing tracking , and QR code Generation 
 ## Goals and schedule
 
 - [x] Computer adquisition from supplier (ordering)
-- [ ] Computer delivery to mkdc
+- [x] Computer delivery to mkdc
 - [ ] Server mysql installation 
 - [ ] server mysql configuration
 - [ ] server mysql testing
