@@ -21,7 +21,7 @@
 """
 from datetime import datetime , timedelta
 
-qr_code = "4G401K170629D0129J0000"
+qr_code = "4G406K170629D0129J0000"
 
 model = qr_code[0:5]
 company = qr_code[5]
@@ -35,5 +35,6 @@ date = datetime(year = int(date[:2])+2000 , month = int(date[2:4]) , day = int(d
 print("model\t: %s \ncompany\t: %s \ndate\t: %s\nshift\t: %s\ncount\t: %s\nline\t: %s\n"%(model,company,date,shift,count,line))
 
 print(date.year)
-    
+
+
 
