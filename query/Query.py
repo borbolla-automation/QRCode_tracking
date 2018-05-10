@@ -10,10 +10,10 @@
                                                                                                                                        
  +------------------------------------------------------------------------------------------------------------------------------------+
  |                                                                                                                                    |
- |  Module Name    : Models                                                                                                           |
- |  Module Purpose : Mysql Database Design , and model relationship , for database functioning                                        |
- |  Inputs  : ORM class                                                                                                               |
- |  Outputs : Create code , database Object                                                                                           |
+ |  Module Name    : Query class                                                                                                           |
+ |  Module Purpose : Class containing progmatic SQL queries                                        |
+ |  Inputs  : ORM class (peewee)                                                                                                               |
+ |  Outputs : String converted query outpit object                                                                                           |
  |  Author : Borbolla Automation Inc                                                                                                  |
  |  Email : ingenieria@borbolla-automation.com                                                                                        |
  |  webpage : www.borbolla-automation.com                                                                                             |
@@ -22,50 +22,15 @@
 
 import peewee
 import datetime
-database =  peewee.SqliteDatabase("QR_code.db")
+from query.Models.QRCode import *
 
-class Piece(peewee.Model):
-    lot_number = peewee.IntegerField()
-    model = peewee.CharField()
-    date = peewee.DateField(default=datetime.datetime.now)
+class Query(object):
+    """docstring for Query"""
+    def __init__(self, model):
+        self.model = model
 
-    class Meta:
-        database = database
+    def get_by_model(self , name):
+        self.model_query = self.model.get(self.model.model == str(name))
 
-class Receipt(peewee.Model):
-    
-    manufacturing_date = peewee.DateField(default=datetime.datetime.now)
-    #casting_date = peewe.DateFIeld()
-    shift = peewee.CharField()
-    date = peewee.DateField(default=datetime.datetime.now)
-    piece = peewee.ForeignKeyField(Piece)
-    class Meta:
-        database = database
-
-class Line(peewee.Model):
-    name = peewee.CharField()
-    date = peewee.DateField(default=datetime.datetime.now)
-    piece = peewee.ForeignKeyField(Piece)
-    class Meta:
-        database = database
-
-
-if __name__ == '__main__':
-    try:
-        Piece.create_table()
-
-    except peewee.OperationalError:
-            print("Piece table already exists!")
-
-    try:
-        Receipt.create_table()
-
-    except peewee.OperationalError:
-        print("Receipt table already exists!")
-
-    try:
-        Line.create_table()
-
-    except peewee.OperationalError:
-        print("Line table already exists!")
-
+        return self.model_query
+        

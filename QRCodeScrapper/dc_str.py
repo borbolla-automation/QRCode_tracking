@@ -43,8 +43,10 @@ else:
             'date_time':date_time,
             'count':count}
 
-    print(date_time)
-
+    print(qr_code)
+    
     print('\n')
 
-    print(qr_code['machine'])
+    print(qr_code['date_time'])
+
+    
