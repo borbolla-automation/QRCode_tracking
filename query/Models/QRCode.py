@@ -51,8 +51,8 @@ class Piece(peewee.Model):
     lot_number = peewee.IntegerField(primary_key = True)
     model = peewee.ForeignKeyField(PieceModel , related_name = 'piece_model')
     date = peewee.DateTimeField(default=datetime.datetime.now)
-    manufacturing_date = peewee.DateField(default=datetime.datetime.now)
-    #casting_date_time = peewe.DateFIeld()
+    manufacturing_date = peewee.DateTimeField(default=datetime.datetime.now)
+    #casting_date_time = peewe.DateTimeFIeld()
     shift = peewee.ForeignKeyField(Shift)
     line = peewee.ForeignKeyField(Location , related_name = 'created_line')
     
