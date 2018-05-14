@@ -42,6 +42,10 @@ class Shift(peewee.Model):
     date_added = peewee.DateTimeField(default = datetime.datetime.now)
     alias = peewee.CharField(max_length = 2)
 
+    class Meta:
+        database = database
+
+
 class Piece(peewee.Model):
     #_id = peewee.PrimaryKeyField(null = False)
     lot_number = peewee.IntegerField(primary_key = True)
