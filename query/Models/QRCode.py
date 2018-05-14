@@ -24,18 +24,41 @@ import peewee
 import datetime
 database =  peewee.SqliteDatabase("QR_code.db")
 
+class PieceModel(peewee.Model):
+    date_added = peewee.DateTimeField(default = datetime.datetime.now)
+    name = peewee.CharField(max_length = 10 , unique = True)
+
+    class Meta:
+        database = database
+
+class Location(peewee.Model):
+    location_name = peewee.CharField(max_length = 10 , unique = True)
+    alias = peewee.CharField(max_length = 3 , unique = True)
+
+    class Meta:
+        database = database
+
+class Shift(peewee.Model):
+    date_added = peewee.DateTimeField(default = datetime.datetime.now)
+    alias = peewee.CharField(max_length = 2)
+
 class Piece(peewee.Model):
+    #_id = peewee.PrimaryKeyField(null = False)
     lot_number = peewee.IntegerField(primary_key = True)
-    model = peewee.CharField()
-    date = peewee.DateField(default=datetime.datetime.now)
+    model = peewee.ForeignKeyField(PieceModel , related_name = 'piece_model')
+    date = peewee.DateTimeField(default=datetime.datetime.now)
     manufacturing_date = peewee.DateField(default=datetime.datetime.now)
     #casting_date_time = peewe.DateFIeld()
-    shift = peewee.CharField()
-    line = peewee.CharField()
+    shift = peewee.ForeignKeyField(Shift)
+    line = peewee.ForeignKeyField(Location , related_name = 'created_line')
     
 
     class Meta:
         database = database
+
+
+        
+        
 """
 class Receipt(peewee.Model):
     
@@ -54,7 +77,7 @@ class Line(peewee.Model):
     class Meta:
         database = database
 """
-
+"""
 if __name__ == '__main__':
     try:
         Piece.create_table()
@@ -74,3 +97,4 @@ if __name__ == '__main__':
     except peewee.OperationalError:
         print("Line table already exists!")
 
+"""
