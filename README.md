@@ -8,12 +8,12 @@ Project for Production line converter housing tracking , and QR code Generation 
 
 - [x] Computer adquisition from supplier (ordering)
 - [x] Computer delivery to mkdc
-- [ ] Server mysql installation 
-- [ ] server mysql configuration
+- [x] Server mysql installation 
+- [x] server mysql configuration
 - [ ] server mysql testing
-- [ ] field pc installation of hardware
+- [x] field pc installation of hardware
 - [ ] field pcs mysql installation
-- [ ] database design
+- [x] database design
 - [ ] string data aquisition programing
 - [ ] query tests from each computer
 - [ ] QR Reader programming 
