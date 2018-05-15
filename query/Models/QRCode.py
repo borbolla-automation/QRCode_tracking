@@ -49,7 +49,7 @@ class Shift(peewee.Model):
 
 class Piece(peewee.Model):
     #_id = peewee.PrimaryKeyField(null = False)
-    lot_number = peewee.IntegerField(primary_key = True)
+    lot_number = peewee.IntegerField()
     model = peewee.ForeignKeyField(PieceModel , related_name = 'piece_model')
     date = peewee.DateTimeField(default=datetime.datetime.now)
     manufacturing_date = peewee.DateTimeField(default=datetime.datetime.now)
