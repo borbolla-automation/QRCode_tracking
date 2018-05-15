@@ -23,7 +23,7 @@
 import peewee
 import datetime
 #database =  peewee.SqliteDatabase("QR_code.db")
-database = peewee.MySQLDatabase(host = "192.168.110.100" , port = 3306 , user = "mkdc" , password = "MKDC" , db = "QRCode")
+database = peewee.MySQLDatabase(host = "192.168.110.100" , port = 3306 , user = "mkdc" , password = "MKDC" , database = "QRCode")
 
 class PieceModel(peewee.Model):
     date_added = peewee.DateTimeField(default = datetime.datetime.now)
