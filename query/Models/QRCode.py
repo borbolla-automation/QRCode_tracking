@@ -23,78 +23,70 @@
 import peewee
 import datetime
 #database =  peewee.SqliteDatabase("QR_code.db")
-database = peewee.MySQLDatabase(host = "192.168.110.100" , port = 3306 , user = "mkdc" , password = "MKDC" , database = "QRCode")
+database = peewee.MySQLDatabase(host = "192.168.110.100" , port = 3306 , user = "mkdc" , password = "MKDC" , database = "mkdc")
 
-class PieceModel(peewee.Model):
-    date_added = peewee.DateTimeField(default = datetime.datetime.now)
+
+class BaseModel(peewee.Model):
+    class Meta:
+        database = database
+
+class PieceModel(BaseModel):
     name = peewee.CharField(max_length = 10 , unique = True)
-
-    class Meta:
-        database = database
-
-class Location(peewee.Model):
-    location_name = peewee.CharField(max_length = 10 , unique = True)
-    alias = peewee.CharField(max_length = 3 , unique = True)
-
-    class Meta:
-        database = database
-
-class Shift(peewee.Model):
     date_added = peewee.DateTimeField(default = datetime.datetime.now)
-    alias = peewee.CharField(max_length = 2)
 
-    class Meta:
-        database = database
+class Line(BaseModel):
+    name = peewee.CharField(max_length = 10 , unique = True)
+    alias = peewee.CharField(max_length = 3 , unique = True)
+    date_added = peewee.DateTimeField(default = datetime.datetime.now)
 
-
-class Piece(peewee.Model):
-    #_id = peewee.PrimaryKeyField(null = False)
-    lot_number = peewee.IntegerField()
-    model = peewee.ForeignKeyField(PieceModel , related_name = 'piece_model')
-    date = peewee.DateTimeField(default=datetime.datetime.now)
-    manufacturing_date = peewee.DateTimeField(default=datetime.datetime.now)
-    casting_date_time = peewe.DateTimeFIeld()
-    shift = peewee.ForeignKeyField(Shift)
-    line = peewee.ForeignKeyField(Location , related_name = 'created_line')
-    
-
-    class Meta:
-        database = database
+class Shift(BaseModel):
+    alias = peewee.CharField(max_length = 3 ,)
+    date_added = peewee.DateTimeField(default = datetime.datetime.now)
 
 
-        
-        
-"""
-class Receipt(peewee.Model):
-    
-    manufacturing_date = peewee.DateField(default=datetime.datetime.now)
-    #casting_date = peewe.DateFIeld()
-    shift = peewee.CharField()
-    date = peewee.DateField(default=datetime.datetime.now)
-    piece = peewee.ForeignKeyField(Piece)
-    class Meta:
-        database = database
 
-class Line(peewee.Model):
+class Piece(BaseModel):
+    lot_number = peewee.CharField()
+    date_added = peewee.DateTimeField(default = datetime.datetime.now)
+    casting_date = peewee.DateTimeField()
+    model = peewee.ForeignKeyField(PieceModel , backref = 'pieces')
+    line  = peewee.ForeignKeyField(Line , backref = 'pieces')
+    shift = peewee.ForeignKeyField(Shift , backref = 'pieces')
+
+
+class Process(BaseModel):
     name = peewee.CharField()
-    date = peewee.DateField(default=datetime.datetime.now)
-    piece = peewee.ForeignKeyField(Piece , backref = 'lines')
-    class Meta:
-        database = database
-"""
-"""
+    piece = peewee.ForeignKeyField(Piece , backref = 'procesess')
+
+class Parameter(BaseModel):
+    Process = peewee.ForeignKeyField(Process , backref = 'parameters')
+    parameter_1  = peewee.FloatField()
+    parameter_2  = peewee.FloatField()
+    parameter_3  = peewee.FloatField()
+    parameter_4  = peewee.FloatField()
+    parameter_5  = peewee.FloatField()
+    parameter_6  = peewee.FloatField()
+    parameter_7  = peewee.FloatField()
+    parameter_8  = peewee.FloatField()
+    parameter_9  = peewee.FloatField()
+    parameter_10 = peewee.FloatField()
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    try:
-        Piece.create_table()
-
-    except peewee.OperationalError:
-            print("Piece table already exists!")
 
     try:
-        Receipt.create_table()
+        PieceModel.create_table()
 
     except peewee.OperationalError:
-        print("Receipt table already exists!")
+        print("PieceModel table already exists!")
+
+    
+
 
     try:
         Line.create_table()
@@ -102,4 +94,28 @@ if __name__ == '__main__':
     except peewee.OperationalError:
         print("Line table already exists!")
 
-"""
+    try:
+        Shift.create_table()
+
+    except peewee.OperationalError:
+        print("Shift table already exists!")
+
+    try:
+
+        Piece.create_table()
+
+    except peewee.OperationalError:
+            print("Piece table already exists!")
+
+
+    try:
+        Process.create_table()
+
+    except peewee.OperationalError:
+        print("Process table already exists!")
+
+    try:
+        Parameter.create_table()
+
+    except peewee.OperationalError:
+        print("Parameter table already exists!")
