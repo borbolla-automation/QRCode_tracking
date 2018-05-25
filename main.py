@@ -28,65 +28,91 @@ import peewee
 #read = "KD01094G4011707051215888"
 #read  = "KD07014G2101804161210021"
 
-while True:
+class QRCodeRW(object):
+    """docstring for QRCodeReader"""
+    def __init__(self, model , line):
+        
+        self.line  = Line.get(Line.alias == line) 
+        self.model = PieceModel.get(PieceModel.name == model)
 
-    #model_str = input('Please input model number : >>')
+    def scrap(self , reading):
+        if len(reading) != 24:
+            print('Readed QR code not from casting area , please read again !')
+
+        else:
+            company , machine , mold , model , date , time , count = reading[:2],
+                                                                     reading[2:4],
+                                                                     reading[4:6],
+                                                                     reading[6:11],
+                                                                     reading[11:17],
+                                                                     reading[17:21],
+                                                                     reading[21:]    
+            s_year = date[:2]
+            ts_year = int(s_year)+2000
+            s_month = int(date[2:4])
+            s_day   = int(date[4:])
+
+            s_hour  = int(time[:2])
+            s_minute = int(time[2:])
+
+            date_time = datetime.datetime(year = ts_year , month = s_month , day = s_day , hour = s_hour , minute = s_minute)
+
+            qr_code={'company':company,
+                    'machine':machine,
+                    'mold':mold,
+                    'model':model,
+                    'date_time':date_time,
+                    'count':count}
+            
+        return qr_code
+
+    def validation(self , qr_code):
+        if qr_code['model'] == self.model:
+            return True
+        else:
+            return False
+            
+
+    def mysql_insert(self , qr_code):
+        #model = PieceModel.get(PieceModel.name == qr_code['model'])
+        #model.save()
+
+        #line = Line.get(Line.name == 'Line 1' )
+        if datetime.datetime.now().hour >= 7 and datetime.datetime.now().hour < 14:
+            alias = 'D'
+        elif datetime.datetime.now().hour >= 14 and datetime.datetime.now().hour < 22:
+            alias = 'N'
+        elif datetime.datetime.now().hour >= 22 or datetime.datetime.now().hour < 7:
+            alias = 'M'    
+        shift = Shift.get(Shift.alias == alias)    
+        #shift.save()
+        Piece.create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = self.model , line = self.line , shift = shift)
+
+        print("company\t= %s\nmachine\t= %s\nmold\t= %s\nmodel\t= %s\ndate_time\t= %s\ncount\t= %s\n"%(qr_code['company'],qr_code['machine'],qr_code['mold'],qr_code['model'],qr_code['date_time'],qr_code['count']))
+
+
+if __name__ == '__main__':
+
+    qr = QRCodeRW('4G101' , 'I')
     
-    #if not model_str: break
+    while True:
+        reading = input('please scan qr code with reader : \n>>')
+        if not reading: break
         
-    #model = PieceModel.get(PieceModel.name == model_str)
+        qr_code = qr.scrap(reading)
 
-    read  = input('Please scan code on die casting piece :\n>>')
+        validate = qr.validation(qr_code)
+        if validate:
+            mysql_insert = (qr_code)
+        else:
+            print('Model diferent than expected')
+
+
+
+
+                
+
+        
     
-    if not read: break
-        
-    print(len(read))
-
-    if len(read) != 24:
-        print('Readed QR code not from casting area , please read again !')
-
-    else:
-        company = read[:2]
-
-        machine = read[2:4]
-
-        mold    = read[4:6]
-
-        model   = read[6:11]
-
-        date    = read[11:17]
-
-        time    = read[17:21]
-
-        count   = read[21:]
-
-        
-        s_year = date[:2]
-        ts_year = int(s_year)+2000
-        s_month = int(date[2:4])
-        s_day   = int(date[4:])
-
-        s_hour  = int(time[:2])
-        s_minute = int(time[2:])
-
-        date_time = datetime.datetime(year = ts_year , month = s_month , day = s_day , hour = s_hour , minute = s_minute)
-
-        qr_code={'company':company,
-                'machine':machine,
-                'mold':mold,
-                'model':model,
-                'date_time':date_time,
-                'count':count}
-        print("company\t= %s\nmachine\t= %s\nmold\t= %s\nmodel\t= %s\ndate_time\t= %s\ncount\t= %s\n"%(qr_code['company'],qr_code['machine'],qr_code['mold'],qr_code['model'],qr_code['date_time'],qr_code['count']))        
-
-        
-    model = PieceModel.get(PieceModel.name == qr_code['model'])
-    #model.save()
-
-    line = Line.get(Line.name == 'Line 1' )
-    #line.save()
-    shift = Shift.get(Shift.alias == 'D')    
-    #shift.save()
-    Piece.create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = model , line = line , shift = shift)
 
 
