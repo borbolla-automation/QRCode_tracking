@@ -94,3 +94,4 @@ if __name__ == '__main__':
 
     Shift.create(alias = 'D')
     Shift.create(alias = 'N')
+    Shift.create(alias = 'M')

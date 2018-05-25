@@ -40,13 +40,7 @@ class QRCodeRW(object):
             print('Readed QR code not from casting area , please read again !')
 
         else:
-            company , machine , mold , model , date , time , count = reading[:2],
-                                                                     reading[2:4],
-                                                                     reading[4:6],
-                                                                     reading[6:11],
-                                                                     reading[11:17],
-                                                                     reading[17:21],
-                                                                     reading[21:]    
+            company , machine , mold , model , date , time , count = reading[:2],reading[2:4],reading[4:6],reading[6:11],reading[11:17],reading[17:21], reading[21:]                                                                  
             s_year = date[:2]
             ts_year = int(s_year)+2000
             s_month = int(date[2:4])
@@ -106,6 +100,7 @@ if __name__ == '__main__':
             mysql_insert = (qr_code)
         else:
             print('Model diferent than expected')
+            break
 
 
 
