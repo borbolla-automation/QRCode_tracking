@@ -48,7 +48,7 @@ class Shift(BaseModel):
 class Piece(BaseModel):
     lot_number = peewee.CharField()
     date_added = peewee.DateTimeField(default = datetime.datetime.now)
-    casting_date = peewee.DateTimeField()
+    casting_date = peewee.DateTimeField(unique = True)
     model = peewee.ForeignKeyField(PieceModel , backref = 'pieces')
     line  = peewee.ForeignKeyField(Line , backref = 'pieces')
     shift = peewee.ForeignKeyField(Shift , backref = 'pieces')
@@ -79,43 +79,18 @@ class Parameter(BaseModel):
 
 if __name__ == '__main__':
 
-    try:
-        PieceModel.create_table()
-
-    except peewee.OperationalError:
-        print("PieceModel table already exists!")
-
+    database.create_tables([PieceModel , Line , Shift , Piece , Process , Parameter])
     
+    models = ['4G401' , '4G101' , '4G110' , '4G210' , '4G450' , '4G150' , '4G160' , '4G260']
 
 
-    try:
-        Line.create_table()
+    for model in models:
+        PieceModel.create(name = model)
 
-    except peewee.OperationalError:
-        print("Line table already exists!")
+        
+    Line.create(name = 'Line 1' , alias = 'I')
+    Line.create(name = 'Line 2' , alias = 'J')
+    Line.create(name = 'Line 3' , alias = 'K')
 
-    try:
-        Shift.create_table()
-
-    except peewee.OperationalError:
-        print("Shift table already exists!")
-
-    try:
-
-        Piece.create_table()
-
-    except peewee.OperationalError:
-            print("Piece table already exists!")
-
-
-    try:
-        Process.create_table()
-
-    except peewee.OperationalError:
-        print("Process table already exists!")
-
-    try:
-        Parameter.create_table()
-
-    except peewee.OperationalError:
-        print("Parameter table already exists!")
+    Shift.create(alias = 'D')
+    Shift.create(alias = 'N')
