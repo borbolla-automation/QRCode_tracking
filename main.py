@@ -61,7 +61,8 @@ class QRCodeRW(object):
         return qr_code
 
     def validation(self , qr_code):
-        if qr_code['model'] == self.model:
+        print(self.model.name,qr_code['model'])
+        if qr_code['model'] == self.model.name:
             return True
         else:
             return False
