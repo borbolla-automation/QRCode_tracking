@@ -103,7 +103,7 @@ if __name__ == '__main__':
         print(validate)
         if validate:
             print('Validate = True , proceed to mysql')
-            mysql_insert = (qr_code)
+            qr.mysql_insert(qr_code)
         else:
             print('Model diferent than expected')
             break
