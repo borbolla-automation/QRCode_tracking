@@ -62,10 +62,13 @@ class QRCodeRW(object):
 
     def validation(self , qr_code):
         print(self.model.name,qr_code['model'])
-        if qr_code['model'] == self.model.name:
-            return True
-        else:
+        if qr_code['model'] != self.model.name:
+            print('False')
+            
             return False
+        print('True')
+        
+        return True
             
 
     def mysql_insert(self , qr_code):
@@ -97,7 +100,9 @@ if __name__ == '__main__':
         qr_code = qr.scrap(reading)
 
         validate = qr.validation(qr_code)
+        print(validate)
         if validate:
+            print('Validate = True , proceed to mysql')
             mysql_insert = (qr_code)
         else:
             print('Model diferent than expected')
