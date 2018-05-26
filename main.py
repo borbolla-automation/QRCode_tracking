@@ -25,6 +25,10 @@ import datetime
 
 from query.Models.QRCode import *
 import peewee
+from tkinter import *
+from tkinter.messagebox import showinfo
+from GUI.template import MyGui
+from PIL import Image
 #read = "KD01094G4011707051215888"
 #read  = "KD07014G2101804161210021"
 
@@ -95,10 +99,85 @@ class QRCodeRW(object):
         print("company\t= %s\nmachine\t= %s\nmold\t= %s\nmodel\t= %s\ndate_time\t= %s\ncount\t= %s\n"%(qr_code['company'],qr_code['machine'],qr_code['mold'],qr_code['model'],qr_code['date_time'],qr_code['count']))
 
 
+class Interface:
+    
+    def __init__(self , master):
+        self.master = master
+        self.master.title = 'Kodaco QRCode tracking'
+        self.master.geometry("{0}x{1}+0+0".format(self.master.winfo_screenwidth(), self.master.winfo_screenheight()))
+        
+        self.menubar = Menu(self.master)
+        # create a pulldown menu, and add it to the menu bar
+        filemenu = Menu(self.menubar, tearoff=0)
+        filemenu.add_command(label="Open", command=self.hello)
+        filemenu.add_command(label="Save", command=self.hello)
+        filemenu.add_separator()
+        filemenu.add_command(label="Exit", command=self.master.quit)
+        self.menubar.add_cascade(label="File", menu=filemenu)
+
+        # create more pulldown menus
+        editmenu = Menu(self.menubar, tearoff=0)
+        editmenu.add_command(label="Cut", command=self.hello)
+        editmenu.add_command(label="Copy", command=self.hello)
+        editmenu.add_command(label="Paste", command=self.hello)
+        self.menubar.add_cascade(label="Edit", menu=editmenu)
+
+        helpmenu = Menu(self.menubar, tearoff=0)
+        helpmenu.add_command(label="About", command=self.hello)
+        self.menubar.add_cascade(label="Help", menu=helpmenu)
+
+        # display the menu
+        self.master.config(menu=self.menubar)
+        
+        #borbolla_logo = Image.open('images/borbolla_logo.png')
+        #borbolla_logo = borbolla_logo.resize((250, 250), Image.ANTIALIAS)
+        
+        self.borbolla_logo = PhotoImage(file = 'images/borbolla_logo.png')
+        self.logo_b_label = Label(self.master , image = self.borbolla_logo).grid(row = 10 , column = 5 , columnspan = 2 , sticky = NW ,)
+
+        self.scan_label = Label(self.master , text = 'Please scan Converter housing QR Code!')
+        self.scan_label.config(font=("Courier", 24))
+        self.scan_label.grid(row = 1 , column = 1)
+
+        self.qr_entry = Entry(self.master , )
+        self.qr_entry.grid(row = 1 , column = 2)
+        self.qr_entry.focus_set()
+
+        self.kodaco_logo = PhotoImage(file = 'images/kodaco_logo.png')
+        self.logo_k_label = Label(self.master , image = self.kodaco_logo).grid(row = 0 , column = 5 , columnspan = 2 , sticky = NW ,)
+        self.qr = QRCodeRW('4G101' , 'I')
+
+        self.master.bind('<Return>' , self.get_text)
+
+    def reply(self , message):
+        showinfo(title = 'MKDC' , message = message)    
+    def hello(self):
+        print("Holle!!")
+
+    def get_text(self , event):
+        text = self.qr_entry.get()
+        print(text)
+        qr_code = self.qr.scrap(text)
+        validate = self.qr.validation(qr_code)
+        if validate:
+            self.qr.mysql_insert(qr_code)
+        else:
+            self.reply('Converter Housing Model different than expected!')
+        self.qr_entry.delete(0,'end')
+            
+
+
 if __name__ == '__main__':
 
+    root = Tk()
+    gui = Interface(root)
+    root.mainloop()
+    
+"""
     qr = QRCodeRW('4G101' , 'I')
     
+
+
     while True:
         reading = input('please scan qr code with reader : \n>>')
         if not reading: break
@@ -115,7 +194,7 @@ if __name__ == '__main__':
             break
 
 
-
+"""
 
                 
 
