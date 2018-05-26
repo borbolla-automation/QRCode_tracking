@@ -28,7 +28,7 @@ import peewee
 from tkinter import *
 from tkinter.messagebox import showinfo
 from GUI.template import MyGui
-from PIL import Image
+#from PIL import Image
 #read = "KD01094G4011707051215888"
 #read  = "KD07014G2101804161210021"
 
