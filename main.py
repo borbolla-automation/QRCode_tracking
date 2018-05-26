@@ -24,10 +24,12 @@
 import datetime
 
 from query.Models.QRCode import *
-import peewee
+import peewee , threading
 from tkinter import *
 from tkinter.messagebox import showinfo
 from GUI.template import MyGui
+import pyautogui
+
 #from PIL import Image
 #read = "KD01094G4011707051215888"
 #read  = "KD07014G2101804161210021"
@@ -133,26 +135,82 @@ class Interface:
         #borbolla_logo = borbolla_logo.resize((250, 250), Image.ANTIALIAS)
         
         self.borbolla_logo = PhotoImage(file = 'images/borbolla_logo.png')
-        self.logo_b_label = Label(self.master , image = self.borbolla_logo).grid(row = 10 , column = 5 , columnspan = 2 , sticky = NW ,)
+        self.logo_b_label = Label(self.master , image = self.borbolla_logo).grid(row = 20 , column = 20 , columnspan = 2 , sticky = NW ,)
 
         self.scan_label = Label(self.master , text = 'Please scan Converter housing QR Code!')
         self.scan_label.config(font=("Courier", 24))
-        self.scan_label.grid(row = 1 , column = 1)
+        self.scan_label.grid(row = 1 , column = 1 ,columnspan = 6)
 
         self.qr_entry = Entry(self.master , )
-        self.qr_entry.grid(row = 1 , column = 2)
+        self.qr_entry.grid(row = 1 , column = 7 , columnspan = 8 , rowspan = 1 , sticky = NSEW)
         self.qr_entry.focus_set()
 
         self.kodaco_logo = PhotoImage(file = 'images/kodaco_logo.png')
-        self.logo_k_label = Label(self.master , image = self.kodaco_logo).grid(row = 0 , column = 5 , columnspan = 2 , sticky = NW ,)
+        self.logo_k_label = Label(self.master , image = self.kodaco_logo).grid(row = 0 , column =20 , columnspan = 10 , sticky = NW ,)
+
+
+        #self.last_10_label = Label(self.master , text = "\n")
+        #self.last_10_label.grid(row = 2 , column = 1 , columnspan = 4 , rowspan = 4)
+        self.last_10()
         self.qr = QRCodeRW('4G101' , 'I')
 
         self.master.bind('<Return>' , self.get_text)
 
+
+
     def reply(self , message):
-        showinfo(title = 'MKDC' , message = message)    
+
+        a = showinfo(title = 'MKDC' , message = message)  
+        #a.after(3000 , press_enter)
+        
+        
+    def last_10(self):
+        pieces = Piece.select().order_by(Piece.date_added.desc()).limit(10)
+        header = 'ID\tMODEL\tLINE\tSHIFT\tCASTING DATE\tMANUF_DATE'
+        header = header.split('\t')
+        print(header)
+        info = []
+        info.append(header)
+        for piece in pieces:
+            info.append([piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added])
+        #label_text = header
+        print(info)
+        print('lenght = %s' % len(pieces))
+        height = len(pieces)+1
+        if height >10 : height = 10
+        width = 6
+        for i in range(height): #Rows
+            for j in range(width): #Columns
+                print('[%s,%s]'%(i,j))
+                b = Label(self.master, text=info[i][j])
+                b.grid(row=i+4, column=j+1)
+
+
+
+        '''for piece in pieces:
+            row = (piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added)
+            for data in row :
+                labels.append(Label(self.master , text = data))
+            
+            for label in labels:
+                label.grid(row = i , column = j , columnspan = 1 , rowspan = 1)    
+                j+=1
+                print('i,j = ',i,j)
+            i+=1
+            print('i = ' , i)'''
+
+        '''for piece in pieces:
+                                    label_text = label_text+'\n\t\t%s\t%s\t%s\t%s\t%s\t%s'%(piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added)'''
+
+        #self.last_10_label.config(text=label_text)
+
+
+
     def hello(self):
         print("Holle!!")
+
+    def press_enter(self):
+        pyautogui.press('enter')    
 
     def get_text(self , event):
         text = self.qr_entry.get()
@@ -164,6 +222,7 @@ class Interface:
         else:
             self.reply('Converter Housing Model different than expected!')
         self.qr_entry.delete(0,'end')
+        last_10()
             
 
 
