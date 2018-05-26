@@ -28,7 +28,7 @@ import peewee , threading
 from tkinter import *
 from tkinter.messagebox import showinfo
 from GUI.template import MyGui
-import pyautogui
+#import pyautogui
 
 #from PIL import Image
 #read = "KD01094G4011707051215888"
