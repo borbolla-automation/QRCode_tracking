@@ -61,6 +61,8 @@ class QRCodeRW(object):
         return qr_code
 
     def validation(self , qr_code):
+
+
         print(self.model.name,qr_code['model'])
         if qr_code['model'] != self.model.name:
             print('False')
@@ -84,7 +86,11 @@ class QRCodeRW(object):
             alias = 'M'    
         shift = Shift.get(Shift.alias == alias)    
         #shift.save()
-        Piece.create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = self.model , line = self.line , shift = shift)
+        piece , created = Piece.get_or_create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = self.model , line = self.line , shift = shift)
+
+        print('Piece created = %s'%created )
+        if not created:
+            print('Piece already scanned , on %s please act accordingly'%piece.date_added)
 
         print("company\t= %s\nmachine\t= %s\nmold\t= %s\nmodel\t= %s\ndate_time\t= %s\ncount\t= %s\n"%(qr_code['company'],qr_code['machine'],qr_code['mold'],qr_code['model'],qr_code['date_time'],qr_code['count']))
 
