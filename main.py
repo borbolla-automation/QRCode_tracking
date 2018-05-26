@@ -222,7 +222,7 @@ class Interface:
         else:
             self.reply('Converter Housing Model different than expected!')
         self.qr_entry.delete(0,'end')
-        last_10()
+        self.last_10()
             
 
 
