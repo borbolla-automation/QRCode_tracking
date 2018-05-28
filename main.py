@@ -26,6 +26,7 @@ import datetime
 from query.Models.QRCode import *
 import peewee , threading
 from tkinter import *
+from tkinter import ttk
 from tkinter.messagebox import showinfo
 from GUI.template import MyGui
 #import pyautogui
@@ -33,6 +34,8 @@ from GUI.template import MyGui
 #from PIL import Image
 #read = "KD01094G4011707051215888"
 #read  = "KD07014G2101804161210021"
+
+color = '#7da6cf'
 
 class QRCodeRW(object):
     """docstring for QRCodeReader"""
@@ -66,11 +69,11 @@ class QRCodeRW(object):
             
         return qr_code
 
-    def validation(self , qr_code):
+    def validation(self , qr_code , model):
 
 
-        print(self.model.name,qr_code['model'])
-        if qr_code['model'] != self.model.name:
+        print(model,qr_code['model'])
+        if qr_code['model'] != model:
             print('False')
             
             return False
@@ -94,20 +97,27 @@ class QRCodeRW(object):
         #shift.save()
         piece , created = Piece.get_or_create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = self.model , line = self.line , shift = shift)
 
-        print('Piece created = %s'%created )
+        #print('Piece created = %s'%created )
         if not created:
             print('Piece already scanned , on %s please act accordingly'%piece.date_added)
 
-        print("company\t= %s\nmachine\t= %s\nmold\t= %s\nmodel\t= %s\ndate_time\t= %s\ncount\t= %s\n"%(qr_code['company'],qr_code['machine'],qr_code['mold'],qr_code['model'],qr_code['date_time'],qr_code['count']))
+        #print("company\t= %s\nmachine\t= %s\nmold\t= %s\nmodel\t= %s\ndate_time\t= %s\ncount\t= %s\n"%(qr_code['company'],qr_code['machine'],qr_code['mold'],qr_code['model'],qr_code['date_time'],qr_code['count']))
 
 
 class Interface:
     
     def __init__(self , master):
         self.master = master
-        self.master.title = 'Kodaco QRCode tracking'
         self.master.geometry("{0}x{1}+0+0".format(self.master.winfo_screenwidth(), self.master.winfo_screenheight()))
-        
+        self.menubar()
+        self.widgets()
+        self.last_10()
+        self.qr = QRCodeRW('4G101' , 'I')
+
+        self.master.bind('<Return>' , self.get_text)
+        self.model_combo_box()
+
+    def menubar(self):
         self.menubar = Menu(self.master)
         # create a pulldown menu, and add it to the menu bar
         filemenu = Menu(self.menubar, tearoff=0)
@@ -130,32 +140,81 @@ class Interface:
 
         # display the menu
         self.master.config(menu=self.menubar)
-        
-        #borbolla_logo = Image.open('images/borbolla_logo.png')
-        #borbolla_logo = borbolla_logo.resize((250, 250), Image.ANTIALIAS)
-        
-        self.borbolla_logo = PhotoImage(file = 'images/borbolla_logo.png')
-        self.logo_b_label = Label(self.master , image = self.borbolla_logo).grid(row = 20 , column = 20 , columnspan = 2 , sticky = NW ,)
 
-        self.scan_label = Label(self.master , text = 'Please scan Converter housing QR Code!')
-        self.scan_label.config(font=("Courier", 24))
+    def widgets(self):
+        self.borbolla_logo = PhotoImage(file = 'images/borbolla_logo.png')
+        self.logo_b_label = Label(self.master , image = self.borbolla_logo , background=color).grid(row = 0 , column = 1 , columnspan = 4 , sticky = NW ,)
+
+        self.scan_label = Label(self.master , text = 'Please scan Converter housing QR Code!' , font = "Courier 24 bold" , background=color)
+        #self.scan_label.config(font=("Courier", 24))
         self.scan_label.grid(row = 1 , column = 1 ,columnspan = 6)
 
-        self.qr_entry = Entry(self.master , )
-        self.qr_entry.grid(row = 1 , column = 7 , columnspan = 8 , rowspan = 1 , sticky = NSEW)
+        self.test_last = Label(self.master , text = 'helo' , background=color)
+        self.test_last.config(font=("Courier", 24))
+        self.test_last.grid(row = 20 , column = 1 ,columnspan = 6)
+
+        self.manufacturing_info = Label(self.master , text = 'Manufacturing info' , font = "Courier 24 bold" , background=color)
+        #self.manufacturing_info.config(font=("Courier", 24))
+        self.manufacturing_info.grid(row = 5 , column = 1 ,columnspan = 6)
+
+        self.qr_entry = Entry(self.master , state = DISABLED , font = "Courier 24")
+        self.qr_entry.grid(row = 2 , column = 1 , columnspan = 20 , rowspan = 2 ,sticky = NSEW)
         self.qr_entry.focus_set()
 
-        self.kodaco_logo = PhotoImage(file = 'images/kodaco_logo.png')
-        self.logo_k_label = Label(self.master , image = self.kodaco_logo).grid(row = 0 , column =20 , columnspan = 10 , sticky = NW ,)
+        #self.kodaco_logo = PhotoImage(file = 'images/kodaco_logo.png')
+        #self.logo_k_label = Label(self.master , image = self.kodaco_logo).grid(row = 0 , column =20 , columnspan = 10 , sticky = NW ,)
 
+        self.combo_label = Label(self.master , text = 'Please select production Model' , font = "Courier 24 bold" , background=color)
+        #self.combo_label.config(font=("Courier", 20))
+        self.combo_label.grid(row = 1 ,column = 23 , sticky =  NSEW , )
 
-        #self.last_10_label = Label(self.master , text = "\n")
-        #self.last_10_label.grid(row = 2 , column = 1 , columnspan = 4 , rowspan = 4)
-        self.last_10()
-        self.qr = QRCodeRW('4G101' , 'I')
+        self.combo_label = Label(self.master , text = '   ' , background=color)
+        self.combo_label.config(font=("Courier", 20))
+        self.combo_label.grid(row = 1 ,column = 24 , sticky =  NSEW , )
 
-        self.master.bind('<Return>' , self.get_text)
+        self.combo_label = Label(self.master , text = '     ' , background=color)
+        self.combo_label.config(font=("Courier", 24))
+        self.combo_label.grid(row = 2 ,column = 22 , sticky =  NSEW , )
 
+        self.combo_label = Label(self.master , text = '     ' , background=color)
+        self.combo_label.config(font=("Courier", 24))
+        self.combo_label.grid(row = 0 ,column = 0 , sticky =  NSEW , )
+
+        self.combo = self.model_combo_box()
+        self.combo.grid(row = 2 , column = 23 , sticky = NSEW)
+        self.combo.bind("<<ComboboxSelected>>", self.combo_selected)
+
+        #self.master.grid_columnconfigure(0, weight=0.5)
+        self.master.grid_rowconfigure(24, weight=1)
+        self.master.grid_rowconfigure(20, weight=1)
+        self.master.grid_rowconfigure(5, weight=1)
+        self.master.grid_rowconfigure(0, weight=1)
+
+    def model_combo_box(self):
+        model_list = []
+        model_list.append('Select Model')
+        models = PieceModel.select()
+        for model in models:
+            model_list.append(model.name)
+
+        model_tuple = tuple(model_list)
+        combo = ttk.Combobox(self.master ,  state = 'readonly' , font = "Courier 24" , background = color)
+        combo['values'] = model_tuple
+        combo.current(0)
+
+        return combo
+
+    def combo_selected(self , event):
+        combo_text = self.combo.get()
+
+        if combo_text != 'Select Model':
+            print(combo_text)
+            self.qr_entry.config(state = NORMAL)
+            self.qr_entry.focus_set()
+        else:
+            self.qr_entry.config(state = DISABLED)
+
+        
 
 
     def reply(self , message):
@@ -168,55 +227,34 @@ class Interface:
         pieces = Piece.select().order_by(Piece.date_added.desc()).limit(10)
         header = 'ID\tMODEL\tLINE\tSHIFT\tCASTING DATE\tMANUF_DATE'
         header = header.split('\t')
-        print(header)
+        #print(header)
         info = []
         info.append(header)
         for piece in pieces:
             info.append([piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added])
         #label_text = header
-        print(info)
-        print('lenght = %s' % len(pieces))
+        #print(info)
+        #print('lenght = %s' % len(pieces))
         height = len(pieces)+1
         if height >10 : height = 10
         width = 6
         for i in range(height): #Rows
             for j in range(width): #Columns
-                print('[%s,%s]'%(i,j))
-                b = Label(self.master, text=info[i][j])
-                b.grid(row=i+4, column=j+1)
-
-
-
-        '''for piece in pieces:
-            row = (piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added)
-            for data in row :
-                labels.append(Label(self.master , text = data))
-            
-            for label in labels:
-                label.grid(row = i , column = j , columnspan = 1 , rowspan = 1)    
-                j+=1
-                print('i,j = ',i,j)
-            i+=1
-            print('i = ' , i)'''
-
-        '''for piece in pieces:
-                                    label_text = label_text+'\n\t\t%s\t%s\t%s\t%s\t%s\t%s'%(piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added)'''
-
-        #self.last_10_label.config(text=label_text)
-
+                #print('[%s,%s]'%(i,j))
+                b = Label(self.master, text=str(info[i][j])+'  ' ,  font =  "Courier 16", background=color)
+                b.grid(row=i+6, column=j+1)
 
 
     def hello(self):
         print("Holle!!")
 
-    def press_enter(self):
-        pyautogui.press('enter')    
 
     def get_text(self , event):
         text = self.qr_entry.get()
         print(text)
         qr_code = self.qr.scrap(text)
-        validate = self.qr.validation(qr_code)
+        model = self.combo.get()
+        validate = self.qr.validation(qr_code , model)
         if validate:
             self.qr.mysql_insert(qr_code)
         else:
@@ -227,37 +265,15 @@ class Interface:
 
 
 if __name__ == '__main__':
-
+    
     root = Tk()
+    root.title('Kodaco QRCode tracking')
+    root.configure(background=color)
     gui = Interface(root)
+
     root.mainloop()
     
-"""
-    qr = QRCodeRW('4G101' , 'I')
-    
 
-
-    while True:
-        reading = input('please scan qr code with reader : \n>>')
-        if not reading: break
-        
-        qr_code = qr.scrap(reading)
-
-        validate = qr.validation(qr_code)
-        print(validate)
-        if validate:
-            print('Validate = True , proceed to mysql')
-            qr.mysql_insert(qr_code)
-        else:
-            print('Model diferent than expected')
-            break
-
-
-"""
-
-                
-
-        
     
 
 
