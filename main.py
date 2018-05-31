@@ -185,34 +185,34 @@ class Interface:
         self.combo.grid(row = 2 , column = 23 , columnspan = 2 , sticky = NSEW)
         self.combo.bind("<<ComboboxSelected>>", self.combo_selected)
 
-        self.today_count_label = Label(self.master , text = 'today pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'today pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 5 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'yesterday pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'yesterday pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 6 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'weekly pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'weekly pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 7 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'total line pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'total line pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 8 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'today ok parts :'.upper() , background = color ,fg = 'green'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'today ok parts :'.upper() , background = color2 ,fg = '#206020'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 9 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'today ng parts :'.upper() , background = color ,fg = 'red'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'today ng parts :'.upper() , background = color2 ,fg = 'red'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 10 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'weekly ok parts pieces :'.upper() , background = color , fg = 'green' , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'weekly ok parts pieces :'.upper() , background = color2 , fg = '#206020' , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 11 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'weekly ng parts pieces :'.upper() , background = color , fg = 'red' , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'weekly ng parts pieces :'.upper() , background = color2 , fg = 'red' , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 12 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'total ok parts :'.upper() , fg = 'green' ,  background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'total ok parts :'.upper() , fg = '#206020' ,  background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 13 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'total ng parts :'.upper() , fg = 'red' ,  background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label = Label(self.master , text = 'total ng parts :'.upper() , fg = 'red' ,  background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 14 , column = 23 , columnspan = 3 , sticky = NSEW)
 
         self.today_count_label = Label(self.master , text = 'total pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
