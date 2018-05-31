@@ -22,8 +22,9 @@
 
 import peewee
 import datetime
-#database =  peewee.SqliteDatabase("QR_code.db")
-database = peewee.MySQLDatabase(host = "192.168.110.100" , port = 3306 , user = "mkdc" , password = "MKDC" , database = "mkdc")
+
+database =  peewee.SqliteDatabase("QR_code.db")
+#database = peewee.MySQLDatabase(host = "192.168.110.100" , port = 3306 , user = "mkdc" , password = "MKDC" , database = "mkdc")
 
 
 class BaseModel(peewee.Model):

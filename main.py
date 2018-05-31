@@ -35,7 +35,8 @@ from GUI.template import MyGui
 #read = "KD01094G4011707051215888"
 #read  = "KD07014G2101804161210021"
 
-color = '#7da6cf'
+color = '#b4b1b1'#'#7da6cf'
+color2 = '#9d9595'
 
 class QRCodeRW(object):
     """docstring for QRCodeReader"""
@@ -149,16 +150,16 @@ class Interface:
         #self.scan_label.config(font=("Courier", 24))
         self.scan_label.grid(row = 1 , column = 1 ,columnspan = 6)
 
-        self.test_last = Label(self.master , text = 'helo' , background=color)
+        self.test_last = Label(self.master , text = '' , background=color)
         self.test_last.config(font=("Courier", 24))
         self.test_last.grid(row = 20 , column = 1 ,columnspan = 6)
 
-        self.manufacturing_info = Label(self.master , text = 'Manufacturing info' , font = "Courier 24 bold" , background=color)
+        self.manufacturing_info = Label(self.master , text = 'MANUFACTURING INFO' ,borderwidth=2, relief="groove", font = "Courier 24 bold" , background=color2)
         #self.manufacturing_info.config(font=("Courier", 24))
-        self.manufacturing_info.grid(row = 5 , column = 1 ,columnspan = 6)
+        self.manufacturing_info.grid(row = 5 , column = 1 ,columnspan = 5 , sticky = NSEW)
 
         self.qr_entry = Entry(self.master , state = DISABLED , font = "Courier 24")
-        self.qr_entry.grid(row = 2 , column = 1 , columnspan = 20 , rowspan = 2 ,sticky = NSEW)
+        self.qr_entry.grid(row = 2 , column = 1 , columnspan = 6 , rowspan = 2 ,sticky = NSEW)
         self.qr_entry.focus_set()
 
         #self.kodaco_logo = PhotoImage(file = 'images/kodaco_logo.png')
@@ -181,13 +182,59 @@ class Interface:
         self.combo_label.grid(row = 0 ,column = 0 , sticky =  NSEW , )
 
         self.combo = self.model_combo_box()
-        self.combo.grid(row = 2 , column = 23 , sticky = NSEW)
+        self.combo.grid(row = 2 , column = 23 , columnspan = 2 , sticky = NSEW)
         self.combo.bind("<<ComboboxSelected>>", self.combo_selected)
+
+        self.today_count_label = Label(self.master , text = 'today pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 5 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'yesterday pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 6 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'weekly pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 7 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'total line pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 8 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'today ok parts :'.upper() , background = color ,fg = 'green'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 9 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'today ng parts :'.upper() , background = color ,fg = 'red'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 10 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'weekly ok parts pieces :'.upper() , background = color , fg = 'green' , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 11 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'weekly ng parts pieces :'.upper() , background = color , fg = 'red' , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 12 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'total ok parts :'.upper() , fg = 'green' ,  background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 13 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'total ng parts :'.upper() , fg = 'red' ,  background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 14 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        self.today_count_label = Label(self.master , text = 'total pieces :'.upper() , background = color ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label.grid(row = 15 , column = 23 , columnspan = 3 , sticky = NSEW)
+
+        
+        self.today_count_label = Button(self.master, text="Send as PDF", command=self.widgets)        
+        self.today_count_label.grid(row = 16 , column = 23 , sticky = NSEW)
+
+        self.today_count_label = Button(self.master, text="Send as Excel", command=self.widgets)        
+        self.today_count_label.grid(row = 16     , column = 24 , sticky = NSEW)
+
+        self.today_count_label = Button(self.master, text="Send as csv", command=self.widgets)        
+        self.today_count_label.grid(row = 16     , column = 25 , sticky = NSEW)
+
+
+
 
         #self.master.grid_columnconfigure(0, weight=0.5)
         self.master.grid_rowconfigure(24, weight=1)
         self.master.grid_rowconfigure(20, weight=1)
-        self.master.grid_rowconfigure(5, weight=1)
+        self.master.grid_rowconfigure(4, weight=1)
         self.master.grid_rowconfigure(0, weight=1)
 
     def model_combo_box(self):
@@ -222,27 +269,41 @@ class Interface:
         a = showinfo(title = 'MKDC' , message = message)  
         #a.after(3000 , press_enter)
         
-        
+    def warning(self , messagege):
+        a = showwarning('Warning' , message = message)
+
+    def error(self , message):
+        a = showerror('Error' , message = message)
+
+    
+
     def last_10(self):
         pieces = Piece.select().order_by(Piece.date_added.desc()).limit(10)
-        header = 'ID\tMODEL\tLINE\tSHIFT\tCASTING DATE\tMANUF_DATE'
+        header = 'LOT NUMBER\tMODEL\tLINE\tSHIFT\tMANUFACTURING DATE'
         header = header.split('\t')
         #print(header)
         info = []
         info.append(header)
         for piece in pieces:
-            info.append([piece.id , piece.model.name , piece.line.alias , piece.shift.alias , piece.casting_date , piece.date_added])
+            info.append([piece.lot_number , piece.model.name , piece.line.alias , piece.shift.alias ,  piece.date_added])
         #label_text = header
         #print(info)
         #print('lenght = %s' % len(pieces))
         height = len(pieces)+1
         if height >10 : height = 10
-        width = 6
+        width = 5
         for i in range(height): #Rows
             for j in range(width): #Columns
                 #print('[%s,%s]'%(i,j))
-                b = Label(self.master, text=str(info[i][j])+'  ' ,  font =  "Courier 16", background=color)
-                b.grid(row=i+6, column=j+1)
+                b = Label(self.master, text=str(info[i][j])+'  ' , borderwidth = 2 , relief = 'groove' , font =  "Courier 16", background=color2 , )
+                if b.cget("text") == 'LOT NUMBER  ' : b.config(font = 'Courier 16 bold')
+                if b.cget("text") == 'MODEL  ' : b.config(font = 'Courier 16 bold')
+                if b.cget("text") == 'LINE  ' : b.config(font = 'Courier 16 bold')
+                if b.cget("text") == 'SHIFT  ' : b.config(font = 'Courier 16 bold')
+                #if b.cget("text") == 'CASTING DATE  ' : b.config(font = 'Courier 16 bold')
+                if b.cget("text") == 'MANUFACTURING DATE  ' : b.config(font = 'Courier 16 bold')
+
+                b.grid(row=i+6, column=j+1 , sticky = NSEW)
 
 
     def hello(self):
