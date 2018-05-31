@@ -232,7 +232,7 @@ class Interface:
 
 
         #self.master.grid_columnconfigure(0, weight=0.5)
-        self.master.grid_rowconfigure(24, weight=1)
+        self.master.grid_rowconfigure(26, weight=1)
         self.master.grid_rowconfigure(20, weight=1)
         self.master.grid_rowconfigure(4, weight=1)
         self.master.grid_rowconfigure(0, weight=1)
