@@ -96,7 +96,11 @@ class QRCodeRW(object):
             alias = 'M'    
         shift = Shift.get(Shift.alias == alias)    
         #shift.save()
-        piece , created = Piece.get_or_create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = self.model , line = self.line , shift = shift)
+        try:
+            piece , created = Piece.get_or_create(lot_number = qr_code['count'] , casting_date = qr_code['date_time'] , model = self.model , line = self.line , shift = shift)
+        except peewee.IntegrityError:
+            print('exception!!')
+            Interface.error(root , message = 'Piece already on database')
 
         #print('Piece created = %s'%created )
         if not created:
@@ -185,17 +189,17 @@ class Interface:
         self.combo.grid(row = 2 , column = 23 , columnspan = 2 , sticky = NSEW)
         self.combo.bind("<<ComboboxSelected>>", self.combo_selected)
 
-        self.today_count_label = Label(self.master , text = 'today pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
-        self.today_count_label.grid(row = 5 , column = 23 , columnspan = 3 , sticky = NSEW)
+        self.today_count_label1 = Label(self.master , text = 'today pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.today_count_label1.grid(row = 5 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'yesterday pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
-        self.today_count_label.grid(row = 6 , column = 23 , columnspan = 3 , sticky = NSEW)
+        self.yesterday_count_label = Label(self.master , text = 'yesterday pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.yesterday_count_label.grid(row = 6 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'weekly pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
-        self.today_count_label.grid(row = 7 , column = 23 , columnspan = 3 , sticky = NSEW)
+        self.week_count_label = Label(self.master , text = 'weekly pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.week_count_label.grid(row = 7 , column = 23 , columnspan = 3 , sticky = NSEW)
 
-        self.today_count_label = Label(self.master , text = 'total line pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
-        self.today_count_label.grid(row = 8 , column = 23 , columnspan = 3 , sticky = NSEW)
+        self.total_line_count_label = Label(self.master , text = 'total line pieces :'.upper() , background = color2 ,  borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
+        self.total_line_count_label.grid(row = 8 , column = 23 , columnspan = 3 , sticky = NSEW)
 
         self.today_count_label = Label(self.master , text = 'today ok parts :'.upper() , background = color2 ,fg = '#206020'  , borderwidth = 2 , relief = 'groove' , anchor = W , font = "Courier 16 bold")
         self.today_count_label.grid(row = 9 , column = 23 , columnspan = 3 , sticky = NSEW)
@@ -237,6 +241,11 @@ class Interface:
         self.master.grid_rowconfigure(4, weight=1)
         self.master.grid_rowconfigure(0, weight=1)
 
+        self.get_today_pieces()
+        self.get_yesterday_pieces()
+        self.get_weekly_pieces()
+        self.get_total_line_pieces()
+
     def model_combo_box(self):
         model_list = []
         model_list.append('Select Model')
@@ -263,15 +272,15 @@ class Interface:
 
         
 
-
+    @staticmethod
     def reply(self , message):
 
         a = showinfo(title = 'MKDC' , message = message)  
         #a.after(3000 , press_enter)
-        
-    def warning(self , messagege):
+    @staticmethod
+    def warning(self , message):
         a = showwarning('Warning' , message = message)
-
+    @staticmethod
     def error(self , message):
         a = showerror('Error' , message = message)
 
@@ -322,8 +331,30 @@ class Interface:
             self.reply('Converter Housing Model different than expected!')
         self.qr_entry.delete(0,'end')
         self.last_10()
-            
 
+    def get_today_pieces(self):
+        today = Piece.select().where((Piece.date_added.year == datetime.date.today().year ) & (Piece.date_added.month == datetime.date.today().month) & (Piece.date_added.day == datetime.date.today().day))
+        self.today_count_label1.config(text = 'TODAY PIECES : \t\t%s'%(len(today)))
+        self.master.after(1000 , self.get_today_pieces)        
+        print('get_today')
+
+    def get_yesterday_pieces(self):
+        today = Piece.select().where((Piece.date_added.year == datetime.date.today().year ) & (Piece.date_added.month == datetime.date.today().month) & (Piece.date_added.day == datetime.date.today().day - 1))
+        self.yesterday_count_label.config(text = 'YESTERDAY PIECES : \t%s'%(len(today)))
+        self.master.after(1000 , self.get_yesterday_pieces)        
+        print('get_YESTERDAY')
+
+    def get_weekly_pieces(self):
+        today = Piece.select().where(Piece.date_added == datetime.date.today().strftime("%V"))
+        self.week_count_label.config(text = 'WEEKLY PIECES : \t%s'%(len(today)))
+        self.master.after(1000 , self.get_weekly_pieces)        
+        print('get_week')
+
+    def get_total_line_pieces(self):
+        today = Piece.select().where(Piece.date_added.month == datetime.date.today().month)
+        self.total_line_count_label.config(text = 'TOTAL LINE PIECES : \t%s'%(len(today)))
+        self.master.after(1000 , self.get_total_line_pieces)        
+        print('get_line')    
 
 if __name__ == '__main__':
     
@@ -331,7 +362,7 @@ if __name__ == '__main__':
     root.title('Kodaco QRCode tracking')
     root.configure(background=color)
     gui = Interface(root)
-
+    
     root.mainloop()
     
 
